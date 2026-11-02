@@ -4,13 +4,13 @@ import stat
 
 import pytest
 
-from hue_bridge_mcp.config import (
+from halo_light.config import (
     default_config_path,
     load_settings,
     save_config,
     validate_host,
 )
-from hue_bridge_mcp.errors import InvalidInputError
+from halo_light.errors import InvalidInputError
 
 posix_only = pytest.mark.skipif(os.name != "posix", reason="POSIX permissions")
 
@@ -77,11 +77,11 @@ def test_loose_permissions_trigger_a_warning(tmp_path, capsys):
 
 
 def test_default_path_follows_environment(tmp_path):
-    assert default_config_path({"HUE_BRIDGE_CONFIG": str(tmp_path / "x.json")}) == (
+    assert default_config_path({"HALO_LIGHT_CONFIG": str(tmp_path / "x.json")}) == (
         tmp_path / "x.json"
     )
     assert default_config_path({"XDG_CONFIG_HOME": str(tmp_path)}) == (
-        tmp_path / "hue-bridge-mcp" / "config.json"
+        tmp_path / "halo-light" / "config.json"
     )
 
 

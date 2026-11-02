@@ -390,7 +390,7 @@ wheels = [
 ]
 
 [[package]]
-name = "hue-bridge-mcp"
+name = "halo-light"
 version = "0.1.0"
 source = { editable = "." }
 dependencies = [

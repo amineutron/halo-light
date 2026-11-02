@@ -213,8 +213,8 @@ async def test_unreachable_bridge_becomes_mcp_error(mcp_client, bridge: FakeBrid
 
 async def test_unauthorized_key_is_explained(bridge: FakeBridge):
     from conftest import Client, create_server
-    from hue_bridge_mcp.client import HueClient
-    from hue_bridge_mcp.runtime import Runtime
+    from halo_light.client import HueClient
+    from halo_light.runtime import Runtime
 
     client = HueClient("192.0.2.10", "wrong", transport=bridge.transport())
     async with Client(create_server(Runtime(client=client))) as mcp:
@@ -224,10 +224,10 @@ async def test_unauthorized_key_is_explained(bridge: FakeBridge):
 
 async def test_missing_configuration_is_a_clear_error(tmp_path):
     from conftest import Client, create_server
-    from hue_bridge_mcp.config import Settings
-    from hue_bridge_mcp.runtime import Runtime
+    from halo_light.config import Settings
+    from halo_light.runtime import Runtime
 
     async with Client(create_server(Runtime(Settings()))) as mcp:
         result = await mcp.call_tool("get_all_lights", {})
-    assert result.is_error and "hue-bridge-mcp pair" in text_of(result)
+    assert result.is_error and "halo-light pair" in text_of(result)
     assert "test-key" not in text_of(result)

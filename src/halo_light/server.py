@@ -8,7 +8,7 @@ from .beat import BeatAdapter
 from .runtime import Runtime
 from .tools import register_tools
 
-SERVER_NAME = "Philips Hue Bridge"
+SERVER_NAME = "halo-light"
 
 
 def create_server(runtime: Runtime | None = None, beat: BeatAdapter | None = None) -> MCPServer:

@@ -13,7 +13,7 @@ from .config import validate_host
 from .errors import BridgeError
 
 LINK_BUTTON_NOT_PRESSED = 101
-DEVICE_TYPE = "hue-bridge-mcp#server"
+DEVICE_TYPE = "halo-light#server"
 
 
 async def pair(

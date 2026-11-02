@@ -73,7 +73,7 @@ def pick_single(hosts: list[str]) -> str:
         return unique[0]
     if not unique:
         raise NotConfiguredError(
-            "No Hue bridge found. Set HUE_BRIDGE_IP or run 'hue-bridge-mcp discover'."
+            "No Hue bridge found. Set HUE_BRIDGE_IP or run 'halo-light discover'."
         )
     raise NotConfiguredError(
         f"Several bridges found ({', '.join(unique)}). Set HUE_BRIDGE_IP to choose one."

@@ -1,9 +1,9 @@
 import httpx
 import pytest
 
-from hue_bridge_mcp.discovery import discover_cloud, find_bridge, pick_single
-from hue_bridge_mcp.errors import BridgeError, NotConfiguredError
-from hue_bridge_mcp.pairing import pair
+from halo_light.discovery import discover_cloud, find_bridge, pick_single
+from halo_light.errors import BridgeError, NotConfiguredError
+from halo_light.pairing import pair
 
 
 def transport_returning(*responses):
@@ -39,7 +39,7 @@ async def test_pairing_surfaces_other_errors_and_bad_host():
     refused = httpx.Response(200, json=[{"error": {"type": 7, "description": "invalid value"}}])
     with pytest.raises(BridgeError, match="invalid value"):
         await pair("192.0.2.1", transport=transport_returning(refused), sleep=no_sleep)
-    from hue_bridge_mcp.errors import InvalidInputError
+    from halo_light.errors import InvalidInputError
 
     with pytest.raises(InvalidInputError):
         await pair("http://evil/")

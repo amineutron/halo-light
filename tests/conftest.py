@@ -6,10 +6,10 @@ import pytest
 from mcp import Client
 
 from fake_bridge import FakeBridge
-from hue_bridge_mcp.beat import BeatAdapter
-from hue_bridge_mcp.client import HueClient
-from hue_bridge_mcp.runtime import Runtime
-from hue_bridge_mcp.server import create_server
+from halo_light.beat import BeatAdapter
+from halo_light.client import HueClient
+from halo_light.runtime import Runtime
+from halo_light.server import create_server
 
 
 @pytest.fixture

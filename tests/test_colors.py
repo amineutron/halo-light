@@ -1,7 +1,7 @@
 import pytest
 
-from hue_bridge_mcp.colors import color_to_xy, kelvin_to_mirek, rgb_to_xy
-from hue_bridge_mcp.errors import InvalidInputError
+from halo_light.colors import color_to_xy, kelvin_to_mirek, rgb_to_xy
+from halo_light.errors import InvalidInputError
 
 
 def test_primary_colors_land_in_expected_regions():

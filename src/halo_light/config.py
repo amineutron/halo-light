@@ -4,7 +4,7 @@ Environment variables:
     HUE_BRIDGE_IP      address of the bridge (optional: discovered when absent)
     HUE_APP_KEY        application key (the ``hue-application-key`` header)
     HUE_BRIDGE_CA_CERT path of a PEM file used to verify the bridge certificate (optional)
-    HUE_BRIDGE_CONFIG  path of the JSON configuration file (optional)
+    HALO_LIGHT_CONFIG  path of the JSON configuration file (optional)
 """
 
 from __future__ import annotations
@@ -22,12 +22,12 @@ from typing import Any
 
 from .errors import InvalidInputError
 
-logger = logging.getLogger("hue-bridge-mcp")
+logger = logging.getLogger("halo-light")
 
 ENV_HOST = "HUE_BRIDGE_IP"
 ENV_KEY = "HUE_APP_KEY"
 ENV_CA = "HUE_BRIDGE_CA_CERT"
-ENV_CONFIG = "HUE_BRIDGE_CONFIG"
+ENV_CONFIG = "HALO_LIGHT_CONFIG"
 
 _HOST_RE = re.compile(r"^[A-Za-z0-9._:\-\[\]]+$")
 
@@ -47,7 +47,7 @@ def default_config_path(env: Mapping[str, str] | None = None) -> Path:
         return Path(explicit).expanduser()
     base = env.get("XDG_CONFIG_HOME")
     root = Path(base) if base else Path.home() / ".config"
-    return root / "hue-bridge-mcp" / "config.json"
+    return root / "halo-light" / "config.json"
 
 
 def validate_host(host: str) -> str:

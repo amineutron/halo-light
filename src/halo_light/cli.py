@@ -16,7 +16,7 @@ from .server import create_server
 
 
 def _build_parser() -> argparse.ArgumentParser:
-    parser = argparse.ArgumentParser(prog="hue-bridge-mcp", description="Hue MCP server")
+    parser = argparse.ArgumentParser(prog="halo-light", description="Hue MCP server")
     sub = parser.add_subparsers(dest="command")
     serve = sub.add_parser("serve", help="run the MCP server (default)")
     serve.add_argument("--transport", choices=["stdio", "streamable-http"], default="stdio")

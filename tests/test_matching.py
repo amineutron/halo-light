@@ -1,7 +1,7 @@
 import pytest
 
-from hue_bridge_mcp.errors import AmbiguousNameError, InvalidInputError, NotFoundError
-from hue_bridge_mcp.matching import find_matches, normalize, resolve_by_name
+from halo_light.errors import AmbiguousNameError, InvalidInputError, NotFoundError
+from halo_light.matching import find_matches, normalize, resolve_by_name
 
 NAMES = ["Salon Plafond", "Salon Lampadaire", "Lampe Café", "Chevet", "Bureau", "Bureau Haut"]
 

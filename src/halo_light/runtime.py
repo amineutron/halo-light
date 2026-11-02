@@ -44,7 +44,7 @@ class Runtime:
         settings = self.settings
         if not settings.app_key:
             raise NotConfiguredError(
-                "No Hue application key. Run 'hue-bridge-mcp pair' (press the bridge link "
+                "No Hue application key. Run 'halo-light pair' (press the bridge link "
                 "button) or set HUE_APP_KEY."
             )
         host = settings.host or await find_bridge(self._discovery_transport)
