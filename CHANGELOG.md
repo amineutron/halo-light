@@ -2,7 +2,7 @@
 
 Format inspiré de [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/), versionnement [SemVer](https://semver.org/lang/fr/).
 
-## [Non publié]
+## [0.1.0]
 
 ### Ajouté
 - Première version : serveur MCP Philips Hue écrit à neuf sur l'API CLIP v2 (https, `httpx` asynchrone).
@@ -12,7 +12,7 @@ Format inspiré de [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/), ver
 - Activation d'une scène par nom, appliquée à sa propre pièce (aucun groupe codé en dur).
 - Identifiants hérités de l'API v1 (`/lights/12`) acceptés pour la compatibilité.
 - Configuration : variables d'environnement prioritaires, fichier JSON créé en mode 0600.
-- Commandes `hue-bridge-mcp pair` (appairage par bouton) et `hue-bridge-mcp discover`.
+- Commandes `halo-light pair` (appairage par bouton) et `halo-light discover`.
 - Extension optionnelle `hue_beat` pilotant un script externe (`HUE_BEAT_PATH`).
 - Erreurs remontées comme erreurs MCP (`isError`) ; annotations MCP sur tous les outils.
 - Tests `pytest` contre un faux pont (`httpx.MockTransport`) et CI GitHub Actions (ruff + pytest, Python 3.10 à 3.13).

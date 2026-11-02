@@ -6,8 +6,8 @@ import textwrap
 import pytest
 
 from conftest import text_of
-from hue_bridge_mcp.beat import BeatAdapter
-from hue_bridge_mcp.errors import BeatUnavailableError, InvalidInputError
+from halo_light.beat import BeatAdapter
+from halo_light.errors import BeatUnavailableError, InvalidInputError
 
 
 def adapter(tmp_path, **extra):
@@ -107,3 +107,17 @@ async def test_validation(tmp_path):
     with pytest.raises(InvalidInputError):
         await beat.start(mode="disco")
     assert sys.executable  # sanity: the adapter relies on it to launch scripts
+
+
+def test_default_file_names_are_overridable(tmp_path):
+    custom = BeatAdapter(
+        env={
+            "HUE_BEAT_PID_FILE": str(tmp_path / "a.pid"),
+            "HUE_BEAT_STATE_FILE": str(tmp_path / "b.json"),
+            "HUE_BEAT_CTRL_FILE": str(tmp_path / "c.ctrl"),
+        }
+    )
+    assert custom._pid_file == tmp_path / "a.pid"
+    assert custom._state_file == tmp_path / "b.json"
+    assert custom._ctrl_file == tmp_path / "c.ctrl"
+    assert BeatAdapter(env={})._pid_file.name == "hue_beat.pid"

@@ -1,8 +1,9 @@
-# hue-bridge-mcp
+# halo-light
+
+[![ci](https://github.com/amineutron/halo-light/actions/workflows/ci.yml/badge.svg)](https://github.com/amineutron/halo-light/actions/workflows/ci.yml)
+[![licence MIT](https://img.shields.io/badge/licence-MIT-blue.svg)](LICENSE)
 
 Serveur [MCP](https://modelcontextprotocol.io) pour les lumières Philips Hue, écrit à neuf sur l'API locale **CLIP v2** du pont (https, en-tête `hue-application-key`). Un assistant (Claude, Lyra, etc.) peut lire l'état des lumières, des pièces et des scènes, puis les commander **par identifiant ou par nom**.
-
-> Nom de travail : le dépôt sera renommé avant publication.
 
 ## Fonctionnalités
 
@@ -20,8 +21,8 @@ Serveur [MCP](https://modelcontextprotocol.io) pour les lumières Philips Hue, �
 Prérequis : Python 3.10 ou plus récent et un pont Hue sur le réseau local.
 
 ```bash
-git clone <url-du-depot>
-cd hue-bridge-mcp
+git clone https://github.com/amineutron/halo-light.git
+cd halo-light
 uv sync
 ```
 
@@ -32,13 +33,13 @@ L'application a besoin de l'adresse du pont (facultative : elle est découverte 
 ### Appairage
 
 ```bash
-uv run hue-bridge-mcp pair            # adresse découverte automatiquement
-uv run hue-bridge-mcp pair --host <adresse-du-pont>
+uv run halo-light pair            # adresse découverte automatiquement
+uv run halo-light pair --host <adresse-du-pont>
 ```
 
-Appuyez sur le bouton du pont quand la commande le demande. La clé est enregistrée dans `~/.config/hue-bridge-mcp/config.json`, créé en mode **0600** (dossier en 0700). La clé n'est jamais affichée.
+Appuyez sur le bouton du pont quand la commande le demande. La clé est enregistrée dans `~/.config/halo-light/config.json`, créé en mode **0600** (dossier en 0700). La clé n'est jamais affichée.
 
-`uv run hue-bridge-mcp discover` liste les ponts connus du service de découverte de Philips.
+`uv run halo-light discover` liste les ponts connus du service de découverte de Philips.
 
 ### Variables d'environnement (prioritaires sur le fichier)
 
@@ -47,7 +48,7 @@ Appuyez sur le bouton du pont quand la commande le demande. La clé est enregist
 | `HUE_APP_KEY` | clé d'application |
 | `HUE_BRIDGE_IP` | adresse du pont (sinon découverte via `discovery.meethue.com`, puis mDNS si `zeroconf` est installé : `uv sync --extra mdns`) |
 | `HUE_BRIDGE_CA_CERT` | fichier PEM pour vérifier le certificat du pont (facultatif) |
-| `HUE_BRIDGE_CONFIG` | autre chemin pour le fichier de configuration |
+| `HALO_LIGHT_CONFIG` | autre chemin pour le fichier de configuration |
 
 Le pont présente un certificat signé par une autorité privée de Signify : par défaut il n'est pas vérifié (réseau local). Pour l'épingler, fournissez l'autorité avec `HUE_BRIDGE_CA_CERT`.
 
@@ -58,7 +59,7 @@ Le pont présente un certificat signé par une autorité privée de Signify : pa
   "mcpServers": {
     "hue": {
       "command": "uv",
-      "args": ["--directory", "/chemin/vers/hue-bridge-mcp", "run", "hue-bridge-mcp"],
+      "args": ["--directory", "/chemin/vers/halo-light", "run", "halo-light"],
       "env": { "HUE_APP_KEY": "<cle>" }
     }
   }
@@ -111,6 +112,19 @@ Contrat attendu du script :
 - s'arrête proprement sur `SIGTERM`.
 
 Les trois fichiers sont par défaut dans le dossier temporaire du système (`hue_beat.pid`, `hue_beat.state.json`, `hue_beat.ctrl`) ; adaptez les variables aux chemins réels du script. Sans `HUE_BEAT_PATH`, ces outils répondent par une erreur claire et le reste du serveur fonctionne normalement. Pendant la synchronisation, le pont peut ignorer les commandes sur les lumières de la zone de divertissement.
+
+## Brancher Lyra
+
+Le script `ironman-hue` (`hue_beat.py`) de Lyra utilise des chemins fixes, définis par les constantes `PID_FILE`, `STATE_FILE` et `CTRL_FILE` en tête du script. Pour que les outils `hue_beat_*` les retrouvent, posez ces variables dans l'environnement du serveur avec les mêmes valeurs :
+
+```bash
+export HUE_BEAT_PATH=<chemin du script hue_beat.py>
+export HUE_BEAT_PID_FILE=<valeur de PID_FILE>
+export HUE_BEAT_STATE_FILE=<valeur de STATE_FILE>
+export HUE_BEAT_CTRL_FILE=<valeur de CTRL_FILE>
+```
+
+Les valeurs par défaut du serveur (`hue_beat.pid`, etc.) ne correspondent pas à celles du script : sans ces variables, le statut et les réglages ne l'atteignent pas.
 
 ## Développement
 
