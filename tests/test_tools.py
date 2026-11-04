@@ -9,7 +9,8 @@ EXPECTED_TOOLS = {
     "set_color", "set_color_xy", "set_color_temperature", "alert_light", "turn_on_group",
     "turn_off_group", "set_group_brightness", "set_group_color_rgb", "set_group_color",
     "set_group_color_temperature", "activate_scene_by_name", "set_scene", "hue_beat_start",
-    "hue_beat_stop", "hue_beat_status", "hue_beat_set",
+    "hue_beat_stop", "hue_beat_status", "hue_beat_set", "set_color_preset", "set_light_effect",
+    "set_group_color_preset",
 }  # fmt: skip
 
 

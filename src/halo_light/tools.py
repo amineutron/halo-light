@@ -10,6 +10,7 @@ from mcp.types import ToolAnnotations
 
 from .beat import BeatAdapter
 from .colors import color_to_xy, rgb_to_xy
+from .presets import effect_body, preset_body
 from .runtime import Runtime
 from .service import (
     brightness_body,
@@ -132,6 +133,33 @@ def register_tools(mcp: MCPServer, rt: Runtime, beat: BeatAdapter | None = None)
         await svc.set_light(light, body)
         return f"Light '{light['name']}' set to {temperature} K."
 
+    @mcp.tool(annotations=SET)
+    async def set_color_preset(preset: str, light_id: Ref = "", light_name: str = "") -> str:
+        """Apply a named preset to a light: warm, cool, daylight, concentration, relax, reading,
+        energize, red, green, blue, purple, orange."""
+        body = preset_body(preset)
+        svc = await rt.service()
+        light = await svc.resolve_light(light_id, light_name)
+        for field, capability in (
+            ("color_temperature", "color_temperature"),
+            ("color", "color"),
+            ("dimming", "dimming"),
+        ):
+            if field in body:
+                require_capability(light, capability)
+        await svc.set_light(light, body)
+        return f"Light '{light['name']}' set to preset '{preset}'."
+
+    @mcp.tool(annotations=SET)
+    async def set_light_effect(effect: str, light_id: Ref = "", light_name: str = "") -> str:
+        """Set a dynamic effect on a light: none, candle, fire, prism, sparkle, opal, glisten,
+        underwater, cosmos, sunbeam, enchant."""
+        body = effect_body(effect)
+        svc = await rt.service()
+        light = await svc.resolve_light(light_id, light_name)
+        await svc.set_light(light, body)
+        return f"Light '{light['name']}' effect set to '{effect}'."
+
     @mcp.tool(annotations=ACTION)
     async def alert_light(light_id: Ref = "", light_name: str = "") -> str:
         """Make a light flash briefly so it can be identified."""
@@ -201,6 +229,16 @@ def register_tools(mcp: MCPServer, rt: Runtime, beat: BeatAdapter | None = None)
         group = await svc.resolve_group(group_id, group_name)
         await svc.set_group(group, body)
         return f"Group '{group['name']}' set to {temperature} K."
+
+    @mcp.tool(annotations=SET)
+    async def set_group_color_preset(preset: str, group_id: Ref = "", group_name: str = "") -> str:
+        """Apply a named preset to a room or zone: warm, cool, daylight, concentration, relax,
+        reading, energize, red, green, blue, purple, orange."""
+        body = preset_body(preset)
+        svc = await rt.service()
+        group = await svc.resolve_group(group_id, group_name)
+        await svc.set_group(group, body)
+        return f"Group '{group['name']}' set to preset '{preset}'."
 
     async def _group_color(group_id: Ref, group_name: str, x: float, y: float) -> str:
         body = xy_body(x, y)

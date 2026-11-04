@@ -5,6 +5,8 @@ Format inspiré de [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/), ver
 ## [Non publié]
 
 ### Ajouté
+- Outils `set_color_preset` et `set_group_color_preset` (tons de blanc, activités, couleurs nommées) et `set_light_effect` (effets annoncés par le pont : `candle`, `fire`, `prism`...).
+- `HUE_BEAT_PYTHON` : interpréteur utilisé pour lancer le script `hue_beat` (par défaut, celui du serveur).
 - Section facultative `beat` du fichier de configuration (`username`, `clientkey`, `area_id`) transmise au script `hue_beat` sous `HUE_USER`, `HUE_CLIENTKEY` et `HUE_AREA_ID`, pour la synchronisation en streaming sans secret dans la configuration du client MCP.
 
 ## [0.1.0]

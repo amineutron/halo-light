@@ -121,3 +121,50 @@ def test_default_file_names_are_overridable(tmp_path):
     assert custom._state_file == tmp_path / "b.json"
     assert custom._ctrl_file == tmp_path / "c.ctrl"
     assert BeatAdapter(env={})._pid_file.name == "hue_beat.pid"
+
+
+def test_interpreter_defaults_to_the_server_python():
+    assert BeatAdapter(env={})._interpreter() == sys.executable
+
+
+def test_interpreter_can_be_overridden(tmp_path):
+    other = tmp_path / "python-other"
+    other.write_text("#!/bin/sh\n")
+    other.chmod(0o755)
+    assert BeatAdapter(env={"HUE_BEAT_PYTHON": str(other)})._interpreter() == str(other)
+
+
+def test_missing_or_non_executable_interpreter_is_reported(tmp_path):
+    with pytest.raises(BeatUnavailableError, match="HUE_BEAT_PYTHON"):
+        BeatAdapter(env={"HUE_BEAT_PYTHON": str(tmp_path / "absent")})._interpreter()
+    plain = tmp_path / "plain"
+    plain.write_text("x")
+    plain.chmod(0o644)
+    with pytest.raises(BeatUnavailableError, match="HUE_BEAT_PYTHON"):
+        BeatAdapter(env={"HUE_BEAT_PYTHON": str(plain)})._interpreter()
+
+
+@pytest.mark.skipif(os.name != "posix", reason="POSIX shell wrapper")
+async def test_start_runs_the_script_with_the_chosen_interpreter(tmp_path):
+    marker = tmp_path / "interpreter-used"
+    wrapper = tmp_path / "python-wrapper"
+    wrapper.write_text(f'#!/bin/sh\necho used > "{marker}"\nexec "{sys.executable}" "$@"\n')
+    wrapper.chmod(0o755)
+    script = tmp_path / "fake_beat.py"
+    script.write_text(FAKE_SCRIPT)
+    files = {
+        "HUE_BEAT_PID_FILE": str(tmp_path / "beat.pid"),
+        "HUE_BEAT_STATE_FILE": str(tmp_path / "beat.state.json"),
+        "HUE_BEAT_CTRL_FILE": str(tmp_path / "beat.ctrl"),
+    }
+    os.environ.update(files)
+    try:
+        beat = BeatAdapter(
+            env={**files, "HUE_BEAT_PATH": str(script), "HUE_BEAT_PYTHON": str(wrapper)}
+        )
+        assert "started" in await beat.start(palette="neon")
+        assert marker.read_text().strip() == "used"
+        await beat.stop()
+    finally:
+        for key in files:
+            os.environ.pop(key, None)

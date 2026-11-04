@@ -27,6 +27,7 @@ from typing import Any
 from .errors import BeatUnavailableError, InvalidInputError
 
 ENV_PATH = "HUE_BEAT_PATH"
+ENV_PYTHON = "HUE_BEAT_PYTHON"
 PALETTES = ("ironman", "fire", "neon", "cool", "sunset", "arctic", "auto")
 MODES = ("pulse", "ambiant")
 
@@ -56,6 +57,20 @@ class BeatAdapter:
         self._proc: subprocess.Popen[bytes] | None = None
 
     # ------------------------------------------------------------------ helpers
+
+    def _interpreter(self) -> str:
+        """Interpreter used to run the script: HUE_BEAT_PYTHON, else this server's own.
+
+        The beat script often needs packages (numpy, audio libraries) that are not installed in
+        the server's environment, so it can be run by another interpreter.
+        """
+        raw = self._env.get(ENV_PYTHON, "").strip()
+        if not raw:
+            return sys.executable
+        path = Path(raw).expanduser()
+        if not path.is_file() or not os.access(path, os.X_OK):
+            raise BeatUnavailableError(f"{ENV_PYTHON}='{raw}' is not an executable file.")
+        return str(path)
 
     def _script(self) -> Path:
         raw = self._env.get(ENV_PATH, "").strip()
@@ -92,7 +107,7 @@ class BeatAdapter:
             raise InvalidInputError(f"Invalid mode. Choose from: {', '.join(MODES)}.")
         if self._pid() is not None:
             return "hue_beat is already running."
-        args = [sys.executable, str(script), f"--palette={palette}"]
+        args = [self._interpreter(), str(script), f"--palette={palette}"]
         if mode:
             args.append(f"--mode={mode}")
         if bass_only:

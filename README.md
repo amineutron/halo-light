@@ -81,9 +81,11 @@ Tous les outils d'action acceptent `light_id` **ou** `light_name` (lumières), `
 | `set_brightness` | luminosité 0-100 (allume ; 0 éteint) | écriture, idempotent |
 | `set_color`, `set_color_rgb`, `set_color_xy` | couleur par nom ou hexadécimal / RGB / xy | écriture, idempotent |
 | `set_color_temperature` | blanc en Kelvin (2000 à 6500) | écriture, idempotent |
+| `set_color_preset` | préréglage nommé : `warm`, `cool`, `daylight`, `concentration`, `relax`, `reading`, `energize`, `red`, `green`, `blue`, `purple`, `orange` | écriture, idempotent |
+| `set_light_effect` | effet dynamique : `none`, `candle`, `fire`, `prism`, `sparkle`, `opal`, `glisten`, `underwater`, `cosmos`, `sunbeam`, `enchant` | écriture, idempotent |
 | `alert_light` | clignotement d'identification | écriture |
 | `turn_on_group`, `turn_off_group` | allumer / éteindre une pièce ou zone | écriture, idempotent |
-| `set_group_brightness`, `set_group_color`, `set_group_color_rgb`, `set_group_color_temperature` | idem pour un groupe | écriture, idempotent |
+| `set_group_brightness`, `set_group_color`, `set_group_color_rgb`, `set_group_color_temperature`, `set_group_color_preset` | idem pour un groupe | écriture, idempotent |
 | `activate_scene_by_name` | active une scène par nom dans sa pièce (`group_name` pour départager) | écriture, idempotent |
 | `set_scene` | active une scène par identifiant | écriture, idempotent |
 | `hue_beat_start`, `hue_beat_stop`, `hue_beat_status`, `hue_beat_set` | extension optionnelle | voir ci-dessous |
@@ -111,7 +113,7 @@ Contrat attendu du script :
 - lit des commandes JSON (`palette`, `mode`, `brightness`, `floor`, `sensitivity`) dans `HUE_BEAT_CTRL_FILE` ;
 - s'arrête proprement sur `SIGTERM`.
 
-Les trois fichiers sont par défaut dans le dossier temporaire du système (`hue_beat.pid`, `hue_beat.state.json`, `hue_beat.ctrl`) ; adaptez les variables aux chemins réels du script. Sans `HUE_BEAT_PATH`, ces outils répondent par une erreur claire et le reste du serveur fonctionne normalement. Pendant la synchronisation, le pont peut ignorer les commandes sur les lumières de la zone de divertissement.
+Les trois fichiers sont par défaut dans le dossier temporaire du système (`hue_beat.pid`, `hue_beat.state.json`, `hue_beat.ctrl`) ; adaptez les variables aux chemins réels du script. Sans `HUE_BEAT_PATH`, ces outils répondent par une erreur claire et le reste du serveur fonctionne normalement. `HUE_BEAT_PYTHON` (facultatif) désigne l'interpréteur qui lance le script, utile quand celui-ci a besoin de paquets (numpy, audio) absents de l'environnement du serveur ; sinon c'est l'interpréteur du serveur. Pendant la synchronisation, le pont peut ignorer les commandes sur les lumières de la zone de divertissement.
 
 ## Brancher Lyra
 
