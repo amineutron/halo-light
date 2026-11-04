@@ -1,0 +1,10 @@
+halo-light
+This project is an independent rewrite, inspired by the interface of
+ThomasRohde/hue-mcp (https://github.com/ThomasRohde/hue-mcp, MIT License,
+Copyright (c) Thomas Rohde), itself built on the phue library by Nathanael
+Lecaude (https://github.com/studioimaginaire/phue, MIT-style license). No
+implementation code from those projects is included here: this software talks
+to the official Philips Hue CLIP v2 API.
+
+Philips Hue is a trademark of Signify Holding. This project is not affiliated
+with or endorsed by Signify.

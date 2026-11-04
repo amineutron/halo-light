@@ -152,4 +152,4 @@ Aucune ligne de code d'implémentation n'est reprise de ces projets : tout est �
 
 ## Licence
 
-[MIT](LICENSE), avec mention d'attribution envers les projets cités ci-dessus.
+[MIT](LICENSE). Les projets dont ce serveur s'inspire sont cités dans [NOTICE](NOTICE).
