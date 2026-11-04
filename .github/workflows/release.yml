@@ -1,0 +1,72 @@
+# A chaque tag v* : build du wheel, publication PyPI par Trusted Publishing
+# (environnement "pypi" déclaré côté PyPI et côté dépôt), release GitHub avec
+# le wheel, le sdist et sbom.json (inventaire CycloneDX, versions exactes de
+# uv.lock). Wheel et sdist portent deux attestations Sigstore : provenance et
+# SBOM. Vérification :
+#   gh attestation verify <fichier> --owner amineutron
+#
+# Le workflow est volontairement autonome : PyPI refuse les jetons OIDC émis
+# depuis un workflow réutilisable (claim job_workflow_ref différent du dépôt).
+name: release
+on:
+  push:
+    tags: ["v*"]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write          # certificat Sigstore des attestations
+      attestations: write
+      artifact-metadata: write
+    steps:
+      - uses: actions/checkout@v7
+      - uses: astral-sh/setup-uv@v7
+      - name: uv.lock à jour avec pyproject.toml
+        run: uv lock --check
+      - run: uv build
+      - name: Inventaire des composants (SBOM CycloneDX)
+        run: |
+          mkdir -p sbom
+          uv export --frozen --no-dev --format cyclonedx1.5 -o sbom/sbom.json > /dev/null
+      - name: Attestation de provenance (wheel et sdist)
+        uses: actions/attest@v4
+        with:
+          subject-path: dist/*
+      - name: Attestation SBOM (wheel et sdist)
+        uses: actions/attest@v4
+        with:
+          subject-path: dist/*
+          sbom-path: sbom/sbom.json
+      - uses: actions/upload-artifact@v7
+        with:
+          name: dist
+          path: dist/
+      - uses: actions/upload-artifact@v7
+        with:
+          name: sbom
+          path: sbom/
+  publish:
+    needs: build
+    runs-on: ubuntu-latest
+    environment: pypi
+    permissions:
+      id-token: write
+      contents: write
+    steps:
+      - uses: actions/download-artifact@v8
+        with:
+          name: dist
+          path: dist/
+      - uses: actions/download-artifact@v8
+        with:
+          name: sbom
+          path: sbom/
+      - uses: pypa/gh-action-pypi-publish@release/v1
+      - name: Release GitHub avec les notes et les fichiers
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release view "${GITHUB_REF_NAME}" --repo "${GITHUB_REPOSITORY}" >/dev/null 2>&1 \
+            || gh release create "${GITHUB_REF_NAME}" --repo "${GITHUB_REPOSITORY}" --title "${GITHUB_REF_NAME}" --generate-notes
+          gh release upload "${GITHUB_REF_NAME}" dist/* sbom/sbom.json --repo "${GITHUB_REPOSITORY}" --clobber
