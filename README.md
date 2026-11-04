@@ -126,6 +126,18 @@ export HUE_BEAT_CTRL_FILE=<valeur de CTRL_FILE>
 
 Les valeurs par défaut du serveur (`hue_beat.pid`, etc.) ne correspondent pas à celles du script : sans ces variables, le statut et les réglages ne l'atteignent pas.
 
+La synchronisation en streaming (DTLS) demande en plus un utilisateur « entertainment », sa clé client et la zone de divertissement. Plutôt que de les écrire dans la configuration du client MCP, ajoutez une section `beat` au fichier `~/.config/halo-light/config.json` (mode 0600) ; le serveur les transmet au script sous les noms `HUE_USER`, `HUE_CLIENTKEY` et `HUE_AREA_ID`, sans jamais les afficher :
+
+```json
+{
+  "bridge_ip": "<adresse-du-pont>",
+  "app_key": "<cle>",
+  "beat": { "username": "<utilisateur>", "clientkey": "<cle-client>", "area_id": "<zone>" }
+}
+```
+
+Sans section `beat`, `HUE_USER` reprend la clé d'application. Une variable d'environnement déjà définie l'emporte toujours.
+
 ## Développement
 
 ```bash

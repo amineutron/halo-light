@@ -57,8 +57,13 @@ class Runtime:
         """Credentials handed (without overriding) to the external hue_beat script."""
         settings = self.settings
         env: dict[str, str] = {}
-        if settings.app_key:
-            env["HUE_USER"] = settings.app_key
+        user = settings.beat_user or settings.app_key
+        if user:
+            env["HUE_USER"] = user
+        if settings.beat_clientkey:
+            env["HUE_CLIENTKEY"] = settings.beat_clientkey
+        if settings.beat_area_id:
+            env["HUE_AREA_ID"] = settings.beat_area_id
         if settings.host:
             env["HUE_BRIDGE_IP"] = settings.host
         return env

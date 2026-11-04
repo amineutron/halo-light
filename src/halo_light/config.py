@@ -38,6 +38,10 @@ class Settings:
     app_key: str | None = None
     ca_cert: str | None = None
     timeout: float = 10.0
+    # Entertainment credentials handed to the external hue_beat script (all optional).
+    beat_user: str | None = None
+    beat_clientkey: str | None = None
+    beat_area_id: str | None = None
 
 
 def default_config_path(env: Mapping[str, str] | None = None) -> Path:
@@ -85,10 +89,15 @@ def load_settings(env: Mapping[str, str] | None = None, path: Path | None = None
     env = os.environ if env is None else env
     data = _read_file(path or default_config_path(env))
     host = env.get(ENV_HOST) or data.get("bridge_ip") or None
+    beat = data.get("beat")
+    beat = beat if isinstance(beat, dict) else {}
     return Settings(
         host=validate_host(host) if host else None,
         app_key=env.get(ENV_KEY) or data.get("app_key") or None,
         ca_cert=env.get(ENV_CA) or data.get("ca_cert") or None,
+        beat_user=beat.get("username") or None,
+        beat_clientkey=beat.get("clientkey") or None,
+        beat_area_id=beat.get("area_id") or None,
     )
 
 

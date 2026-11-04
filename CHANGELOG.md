@@ -2,6 +2,11 @@
 
 Format inspiré de [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/), versionnement [SemVer](https://semver.org/lang/fr/).
 
+## [Non publié]
+
+### Ajouté
+- Section facultative `beat` du fichier de configuration (`username`, `clientkey`, `area_id`) transmise au script `hue_beat` sous `HUE_USER`, `HUE_CLIENTKEY` et `HUE_AREA_ID`, pour la synchronisation en streaming sans secret dans la configuration du client MCP.
+
 ## [0.1.0]
 
 ### Ajouté
