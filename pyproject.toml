@@ -1,6 +1,6 @@
 [project]
 name = "halo-light"
-version = "0.1.0"
+version = "0.1.1"
 description = "Serveur MCP pour Philips Hue (API CLIP v2) : lumieres, pieces, scenes, par identifiant ou par nom."
 readme = "README.md"
 license = { text = "MIT" }

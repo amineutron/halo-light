@@ -2,7 +2,7 @@
 
 Format inspiré de [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/), versionnement [SemVer](https://semver.org/lang/fr/).
 
-## [Non publié]
+## [0.1.1] - 2026-11-04
 
 ### Ajouté
 - Outils `set_color_preset` et `set_group_color_preset` (tons de blanc, activités, couleurs nommées) et `set_light_effect` (effets annoncés par le pont : `candle`, `fire`, `prism`...).
